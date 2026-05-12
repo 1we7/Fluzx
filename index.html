@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/CSInterface.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+<div id="app">
+
+  <!-- TITLE BAR -->
+  <div id="titlebar">
+    <div class="tab-icons">
+      <!-- Graph tab: mini bezier curve icon -->
+      <button class="tab-btn active" data-tab="graph" title="Graph">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 13 C4 13 4 3 8 8 C12 13 12 3 14 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </button>
+      <!-- Utils tab: wrench/tools icon -->
+      <button class="tab-btn" data-tab="utils" title="Utilities">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="6" width="8" height="2" rx="1" fill="currentColor"/>
+          <rect x="2" y="10" width="12" height="2" rx="1" fill="currentColor"/>
+          <circle cx="12" cy="7" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="2" y="2" width="5" height="2" rx="1" fill="currentColor"/>
+          <circle cx="9" cy="3" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </button>
+      <!-- Render tab: play/export icon -->
+      <button class="tab-btn" data-tab="render" title="Render">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M6.5 5.5 L11 8 L6.5 10.5 Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="tab-btn" data-tab="infos" title="About">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <text x="8" y="12" text-anchor="middle" font-size="9" font-style="italic" font-family="Georgia, serif" fill="currentColor">i</text>
+        </svg>
+      </button>
+    </div>
+    <div class="title-text">Fluzx</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- ── TAB 1 : GRAPH ── -->
+    <div class="tab-panel active" id="tab-graph">
+      <div class="section-label">Easing Graph</div>
+      <div class="h-rule"></div>
+
+      <!-- Main graph canvas (smaller, leaves room for presets) -->
+      <div class="graph-wrapper" id="graph-wrapper">
+        <div class="cp" id="cp1" tabindex="0"></div>
+        <div class="cp" id="cp2" tabindex="0"></div>
+        <canvas id="canvas-ghost" class="graph-canvas"></canvas>
+        <canvas id="canvas-curve" class="graph-canvas"></canvas>
+        <div id="bezier-values">
+          <input id="bv-p1x" type="text" value="0.00" />,<input id="bv-p1y" type="text" value="0.00" />,
+          <input id="bv-p2x" type="text" value="0.25" />,<input id="bv-p2y" type="text" value="1.00" />
+        </div>
+      </div>
+
+      <!-- Curve controls -->
+      <div class="pill">
+        <span class="pill-label">Type</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value">
+          <select id="curve-type">
+            <option value="easeInOut">Ease In Out</option>
+            <option value="easeIn">Ease In</option>
+            <option value="easeOut">Ease Out</option>
+            <option value="linear">Linear</option>
+            <option value="overshoot">Overshoot</option>
+            <option value="bounce">Bounce</option>
+          </select>
+        </span>
+      </div>
+
+      <div class="pill">
+        <span class="pill-label">Influence</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value">
+          <div class="pill-slider">
+            <input type="range" id="curve-influence" min="0" max="100" value="66">
+            <span class="slider-val" id="curve-influence-val">66%</span>
+          </div>
+        </span>
+      </div>
+
+      <!-- Apply button -->
+      <button class="apply-btn" id="apply-btn">Apply to Selected Keyframes</button>
+
+      <div class="h-rule"></div>
+      <div class="section-label">Presets</div>
+
+      <!-- Mini preset graphs row -->
+      <div class="preset-graphs" id="preset-graphs">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Save preset row -->
+      <div class="presets-row">
+        <button class="btn-sm accent" id="save-preset">+ Save</button>
+        <button class="btn-sm danger" id="delete-preset">✕ Delete</button>
+      </div>
+    </div>
+
+    <!-- ── TAB 2 : UTILITIES ── -->
+    <div class="tab-panel" id="tab-utils">
+      <div class="section-label">Utilities</div>
+      <div class="h-rule"></div>
+
+      <div class="util-grid">
+        <button class="util-btn" data-fn="precomp">
+          <span class="util-btn-label">Precomp</span>
+          <span class="util-btn-sep"></span>
+          <span class="util-btn-action">Create</span>
+        </button>
+
+        <button class="util-btn" data-fn="blackSolid">
+          <span class="util-btn-label">Black Solid</span>
+          <span class="util-btn-sep"></span>
+          <span class="util-btn-action">Add</span>
+        </button>
+
+        <button class="util-btn" data-fn="whiteSolid">
+          <span class="util-btn-label">White Solid</span>
+          <span class="util-btn-sep"></span>
+          <span class="util-btn-action">Add</span>
+        </button>
+
+        <button class="util-btn" data-fn="adjLayer">
+          <span class="util-btn-label">Adj. Layer</span>
+          <span class="util-btn-sep"></span>
+          <span class="util-btn-action">Add</span>
+        </button>
+
+        <button class="util-btn" data-fn="nullObj">
+          <span class="util-btn-label">Null Object</span>
+          <span class="util-btn-sep"></span>
+          <span class="util-btn-action">Add</span>
+        </button>
+
+        <button class="util-btn" data-fn="camera">
+          <span class="util-btn-label">Camera</span>
+          <span class="util-btn-sep"></span>
+          <span class="util-btn-action">Add</span>
+        </button>
+      </div>
+
+      <div class="h-rule"></div>
+      <div class="section-label">Selected Layers</div>
+
+      <div class="pill">
+        <span class="pill-label">Layer</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value" id="layer-name" style="color:var(--muted)">No layer selected</span>
+      </div>
+
+      <button class="util-btn" data-fn="trimToWorkArea" style="margin-top:2px">
+        <span class="util-btn-label">Trim to Work Area</span>
+        <span class="util-btn-sep"></span>
+        <span class="util-btn-action">Apply</span>
+      </button>
+
+      <button class="util-btn" data-fn="parentToNull">
+        <span class="util-btn-label">Parent to Null</span>
+        <span class="util-btn-sep"></span>
+        <span class="util-btn-action">Apply</span>
+      </button>
+
+      <button class="util-btn" data-fn="setKeyframes">
+        <span class="util-btn-label">Set Keyframes</span>
+        <span class="util-btn-sep"></span>
+        <span class="util-btn-action">Apply</span>
+      </button>
+    </div>
+
+    <!-- ── TAB 3 : RENDER ── -->
+    <div class="tab-panel" id="tab-render">
+      <div class="section-label">Render Settings</div>
+      <div class="h-rule"></div>
+
+      <div class="pill">
+        <span class="pill-label">Active comp</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value" id="render-comp-name" style="color:var(--muted)">—</span>
+      </div>
+
+      <div class="pill">
+        <span class="pill-label">Name</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value">
+          <input class="pill-input" id="render-name" type="text" placeholder="Render name">
+        </span>
+      </div>
+
+
+
+      <div class="pill">
+        <span class="pill-label">Output</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value">
+          <input class="pill-input" id="output-path" type="text" placeholder="[Choose folder]" readonly>
+        </span>
+        <button class="btn-sm" id="browse-btn" style="border-radius:0 8px 8px 0;border-left:none;height:30px;margin:-1px">···</button>
+      </div>
+
+      <div style="flex:1"></div>
+      <div class="h-rule"></div>
+
+      <div class="pill">
+        <span class="pill-label">Render Engine</span>
+        <span class="pill-sep"></span>
+        <span class="pill-value">
+          <select id="render-engine">
+            <option value="ae">After Effects</option>
+            <option value="ame">Media Encoder</option>
+          </select>
+        </span>
+      </div>
+
+      <div class="render-btns">
+        <button class="render-action-btn" id="render-btn">▶ Render</button>
+        <button class="render-action-btn danger" id="cache-btn">✕ Clear Cache</button>
+      </div>
+    </div>
+
+  <div class="tab-panel" id="tab-infos">
+    <div class="section-label">About</div>
+    <div class="h-rule"></div>
+    <div style="padding:16px 4px;color:var(--muted);font-size:11px;line-height:1.7;text-align:center;">
+      Extension made by <span style="color:var(--text);font-weight:600;">1we7</span><br>
+      using Gemini Pro and Claude.ai
+    </div>
+  </div>
+
+  </div><!-- #content -->
+</div><!-- #app -->
+
+<div id="toast"></div>
+</body>
+</html>
